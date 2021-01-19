@@ -9,9 +9,12 @@ double smoothstep(double t);
 
 double lerp(double lo, double hi, double t);
 
+void swap(int* a, int* b);
+
 void noise_init();
 
-float noise_eval(vec2d p);
+double noise_eval_2d(vec2d p);
 
+double noise_eval_xy(double x, double y);
 
 #endif

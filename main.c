@@ -1,10 +1,29 @@
 #include <gtk/gtk.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
+#include <math.h>
 #include "noise.h"
 
 #define GETOBJ(a) gtk_builder_get_object(builder, a)
 
 GdkPixbuf* pixbuf;
+
+typedef struct Pixel
+{
+    unsigned char r;
+    unsigned char g;
+    unsigned char b;
+} Pixel;
+
+Pixel texture_eval(int x, int y, double freq)
+{
+    Pixel p;
+    //int v = asin((noise_eval_xy(x*freq, y*freq)*2.0f)-1.0f)/M_PI_2 * 255.0f;
+    int v = noise_eval_xy(x*freq, y*freq) * 255.0f;
+    p.r = v;
+    p.g = v;
+    p.b = v;
+    return p;
+}
 
 void recalc_texture(GtkBuilder* builder)
 {
@@ -21,11 +40,11 @@ void recalc_texture(GtkBuilder* builder)
     {
         for (int x = 0; x < width; ++x)
         {
-            int v = noise_eval((vec2d){.x = x*freq, .y = y*freq}) * 255.0f;
+            Pixel ptex = texture_eval(x, y, freq);
             guchar* p = pixels + y*rowstride + x*n_channels;
-            p[0] = v;
-            p[1] = v;
-            p[2] = v;
+            p[0] = ptex.r;
+            p[1] = ptex.g;
+            p[2] = ptex.b;
         }
     }
     gtk_image_set_from_pixbuf(texture, pixbuf);
