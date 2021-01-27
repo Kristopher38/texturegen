@@ -38,9 +38,9 @@ void noise_new()
     }
 }
 
-void noise_init()
+void noise_init(int seed)
 {
-    srand(time(NULL));
+    srand(seed != 0 ? seed : time(NULL));
 }
 
 double noise_eval_vec2d(vec2d p)

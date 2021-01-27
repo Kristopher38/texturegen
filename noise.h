@@ -11,7 +11,7 @@ double lerp(double lo, double hi, double t);
 
 void swap(int* a, int* b);
 
-void noise_init();
+void noise_init(int seed);
 
 double noise_eval_2d(vec2d p);
 
