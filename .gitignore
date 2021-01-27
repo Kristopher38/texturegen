@@ -2,3 +2,5 @@
 cmake_install.cmake
 Makefile
 bin/
+lib/
+share/
