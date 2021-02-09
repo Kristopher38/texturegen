@@ -3,23 +3,6 @@
 <interface>
   <requires lib="gtk+" version="3.24"/>
   <!-- interface-local-resource-path C:\\Users\\Krzychu\\Desktop\\texturegenerator\\bin\\share -->
-  <object class="GtkListStore" id="function_list">
-    <columns>
-      <!-- column-name function_str -->
-      <column type="gchararray"/>
-    </columns>
-    <data>
-      <row>
-        <col id="0" translatable="yes">Fractal sum</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Sine wave</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Gradient</col>
-      </row>
-    </data>
-  </object>
   <object class="GtkWindow" id="main_window">
     <property name="can-focus">False</property>
     <signal name="destroy" handler="window_destroy" swapped="no"/>
@@ -61,26 +44,6 @@
           </packing>
         </child>
         <child>
-          <object class="GtkComboBox" id="function_combobox">
-            <property name="width-request">140</property>
-            <property name="height-request">34</property>
-            <property name="visible">True</property>
-            <property name="can-focus">False</property>
-            <property name="model">function_list</property>
-            <signal name="changed" handler="function_changed" swapped="no"/>
-            <child>
-              <object class="GtkCellRendererText"/>
-              <attributes>
-                <attribute name="text">0</attribute>
-              </attributes>
-            </child>
-          </object>
-          <packing>
-            <property name="x">290</property>
-            <property name="y">10</property>
-          </packing>
-        </child>
-        <child>
           <object class="GtkButton" id="save_button">
             <property name="label" translatable="yes">Save as image</property>
             <property name="width-request">107</property>
@@ -115,8 +78,8 @@
             <signal name="insert-text" handler="seed_insert_text" swapped="no"/>
           </object>
           <packing>
-            <property name="x">15</property>
-            <property name="y">333</property>
+            <property name="x">89</property>
+            <property name="y">334</property>
           </packing>
         </child>
         <child>
@@ -125,6 +88,8 @@
             <property name="height-request">320</property>
             <property name="visible">True</property>
             <property name="can-focus">True</property>
+            <property name="margin-left">10</property>
+            <property name="margin-right">10</property>
             <property name="margin-start">10</property>
             <property name="margin-end">10</property>
             <property name="margin-top">10</property>
@@ -164,8 +129,56 @@
             <property name="label" translatable="yes">Seed:</property>
           </object>
           <packing>
-            <property name="x">15</property>
-            <property name="y">317</property>
+            <property name="x">18</property>
+            <property name="y">343</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkColorButton" id="tint_button">
+            <property name="width-request">74</property>
+            <property name="height-request">46</property>
+            <property name="visible">True</property>
+            <property name="can-focus">True</property>
+            <property name="receives-default">True</property>
+            <property name="title" translatable="yes">Pick a texture tint</property>
+            <property name="color">#ffffffffffff</property>
+            <signal name="color-set" handler="color_set" swapped="no"/>
+          </object>
+          <packing>
+            <property name="x">84</property>
+            <property name="y">385</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel">
+            <property name="width-request">52</property>
+            <property name="height-request">20</property>
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="label" translatable="yes">Color tint:</property>
+          </object>
+          <packing>
+            <property name="x">17</property>
+            <property name="y">396</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkComboBoxText" id="function_combobox">
+            <property name="width-request">130</property>
+            <property name="height-request">34</property>
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="margin-left">10</property>
+            <property name="margin-right">10</property>
+            <property name="margin-start">10</property>
+            <property name="margin-end">10</property>
+            <property name="margin-top">5</property>
+            <property name="margin-bottom">5</property>
+            <signal name="changed" handler="function_changed" swapped="no"/>
+          </object>
+          <packing>
+            <property name="x">290</property>
+            <property name="y">10</property>
           </packing>
         </child>
       </object>

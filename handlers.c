@@ -54,8 +54,8 @@ TextureFunc* get_texture_func(GtkBuilder* builder)
 {
     GtkComboBox* func_combobox = GTK_COMBO_BOX(GETOBJ("function_combobox"));
     gint id = gtk_combo_box_get_active(func_combobox);
-    assert(id >= -1 && id <= 2);
-    return &tex_funcs[id+1];
+    assert(id >= 0 && id <= tex_funcs_n);
+    return &tex_funcs[id];
 }
 
 double* get_slider_values(GtkBuilder* builder, int n_sliders)
@@ -81,6 +81,8 @@ void recalc_texture(GtkBuilder* builder)
     TextureFunc* tex_func = get_texture_func(builder);
     double* slider_values = get_slider_values(builder, tex_func->n_sliders);
 
+
+
     for (int y = 0; y < height; ++y)
     {
         for (int x = 0; x < width; ++x)
@@ -95,17 +97,24 @@ void recalc_texture(GtkBuilder* builder)
                 max_pixel = p.b;
         }
     }
+
+    GdkRGBA color;
+    gtk_color_chooser_get_rgba(GTK_COLOR_CHOOSER(GETOBJ("tint_button")), &color);
+
     for (int y = 0; y < height; ++y)
     {
         for (int x = 0; x < width; ++x)
         {
             Pixel* ptex = tex + y*width + x;
             guchar* p = pixels + y*rowstride + x*n_channels;
-            p[0] = fmax(0, ptex->r / max_pixel * 255.0f);
-            p[1] = fmax(0, ptex->g / max_pixel * 255.0f);
-            p[2] = fmax(0, ptex->b / max_pixel * 255.0f);
+            p[0] = fmax(0, ptex->r / max_pixel * 255.0f) * color.red;
+            p[1] = fmax(0, ptex->g / max_pixel * 255.0f) * color.green;
+            p[2] = fmax(0, ptex->b / max_pixel * 255.0f) * color.blue;
         }
     }
+
+
+
 
     free(slider_values);
     free(tex);
@@ -199,9 +208,13 @@ G_MODULE_EXPORT void window_show(GtkWidget* widget, GtkBuilder* builder)
     GtkImage* texture = GTK_IMAGE(GETOBJ("texture_image"));
     pixbuf = gdk_pixbuf_new(GDK_COLORSPACE_RGB, FALSE, 8, 256, 256);
 
+    // init function combobox
+    GtkComboBox* functions_combo = GTK_COMBO_BOX_TEXT(GETOBJ("function_combobox"));
+    for (int i = 0; i < tex_funcs_n; ++i)
+        gtk_combo_box_text_append_text(functions_combo, tex_funcs[i].f_name);
+    gtk_combo_box_set_active(GTK_COMBO_BOX(functions_combo), 0);
+
     // init seed
-
-
     srand(time(NULL));
     seed_update_all(builder);
 
@@ -223,4 +236,12 @@ G_MODULE_EXPORT void window_destroy(GtkWidget* widget, GtkBuilder* builder)
 G_MODULE_EXPORT void ignore_scroll(GtkScale* scale, GtkBuilder* builder)
 {
     g_signal_stop_emission_by_name(scale, "scroll-event");
+}
+
+G_MODULE_EXPORT void color_set(GtkColorButton* button, GtkBuilder* builder)
+{
+    GdkRGBA color;
+    gtk_color_chooser_get_rgba(GTK_COLOR_CHOOSER(GETOBJ("tint_button")), &color);
+    printf("%f %f %f\n", color.red, color.green, color.blue);
+    recalc_texture(builder);
 }
