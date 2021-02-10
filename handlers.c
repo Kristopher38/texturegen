@@ -29,10 +29,6 @@ void update_sliders(GtkBuilder* builder, int n_sliders, Slider* sliders)
         g_signal_connect(slider, "scroll-event", ignore_scroll, builder);
         g_signal_connect(adjustment, "value-changed", slider_changed, builder);
 
-//        gint event_mask = gtk_widget_get_events(widget);
-//        event_mask = event_mask & ~GDK_SCROLL;
-//        gtk_widget_set_events(widget, event_mask);
-
         adjustments[i] = adjustment;
         g_object_ref_sink(adjustment);
         gtk_box_pack_start(slider_box, GTK_WIDGET(label), FALSE, FALSE, 0);
@@ -111,9 +107,6 @@ void recalc_texture(GtkBuilder* builder)
         }
     }
 
-
-
-
     free(slider_values);
     free(tex);
     gtk_image_set_from_pixbuf(texture, pixbuf);
@@ -184,17 +177,28 @@ G_MODULE_EXPORT void save_click(GtkWidget* widget, GtkBuilder* builder)
     if (res == GTK_RESPONSE_ACCEPT)
     {
         char* filename = gtk_file_chooser_get_filename(chooser);
-        char* format = gtk_combo_box_get_active_id(format_combo);
-        GError* save_error = NULL;
-        gboolean save_ok = gdk_pixbuf_save(pixbuf, filename, format, &save_error, NULL);
+        const char* format = gtk_combo_box_get_active_id(format_combo);
+        const char* loc = strstr(filename, format);
+        char* filename_ext = malloc((strlen(filename)+strlen(format)+2)*sizeof(char));
+        strcpy(filename_ext, filename);
+        if (loc == NULL || filename+strlen(filename)-strlen(format) != loc)
+        {
+            filename_ext[strlen(filename)] = '.';
+            strcpy(filename_ext+strlen(filename)+1, format);
+        }
+        gtk_file_chooser_set_filename(chooser, filename_ext);
 
-        if (save_ok == FALSE)
+        GError* save_error = NULL;
+        gboolean save_ok = gdk_pixbuf_save(pixbuf, filename_ext, format, &save_error, NULL);
+
+        if (!save_ok)
         {
             g_printerr("%s", save_error->message);
             GtkMessageDialog* dialog = GTK_MESSAGE_DIALOG(GETOBJ("save_error_dialog"));
             gtk_message_dialog_set_markup(dialog, save_error->message);
             gtk_dialog_run(dialog);
         }
+        free(filename_ext);
         g_free(filename);
     }
     gtk_widget_hide(GTK_WIDGET(chooser));
