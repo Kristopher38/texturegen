@@ -3,6 +3,7 @@
 #include <math.h>
 #include "noise.h"
 #include "pixel.h"
+#include "common.h"
 
 // Texture generating functions
 

@@ -27,7 +27,8 @@ Pixel texture_eval_frac(int x, int y, double* slidervals) //double freq, double 
     //v *= 10;
     //v = v - (int)v;
 
-    v = fabs(2*v-1);
+    double maxvalue = gain == 1 ? 5 : (pow(gain, 5) - 1)/(gain - 1);
+    v = v/maxvalue;//fabs(2*v-1);
 
     p.r = v;
     p.g = v;
@@ -35,7 +36,7 @@ Pixel texture_eval_frac(int x, int y, double* slidervals) //double freq, double 
     return p;
 }
 
-Slider texture_eval_sin_sliders[3] = {
+Slider texture_eval_sin_sliders[] = {
     (Slider){.initval=0.05f, .min=0.0f, .max=1.0f, .step=0.002f, .digits=4, .label="frequency 1"},
     (Slider){.initval=0.5f, .min=0.0f, .max=1.0f, .step=0.01f, .digits=2, .label="gain"},
     (Slider){.initval=2.0f, .min=1.0f, .max=4.0f, .step=0.05f, .digits=2, .label="frequency 2"}
@@ -60,7 +61,7 @@ Pixel texture_eval_empty(int x, int y, double* slidervals) //double a, double b,
     return (Pixel){.r=0, .g=0, .b=0};
 }
 
-Slider texture_eval_gradient_sliders[1] = {
+Slider texture_eval_gradient_sliders[] = {
     (Slider){.initval=0.0f, .min=0.0f, .max=1.0f, .step=0.01f, .digits=2, .label="offset"}
 };
 
@@ -70,7 +71,7 @@ Pixel texture_eval_gradient(int x, int y, double* slidervals)
     return (Pixel){.r=v, .g=v, .b=v};
 }
 
-Slider texture_eval_grass_sliders[3] = {
+Slider texture_eval_grass_sliders[] = {
     (Slider){.initval=0.1f, .min=0.05f, .max=1.0f, .step=0.002f, .digits=4, .label="zoom"},
     (Slider){.initval=1.5f, .min=0.5f, .max=1.5f, .step=0.01f, .digits=2, .label="dirt amount"},
     (Slider){.initval=2.0f, .min=1.5f, .max=3.0f, .step=0.05f, .digits=2, .label="grain"}
@@ -94,11 +95,23 @@ Pixel texture_eval_grass(int x, int y, double* slidervals)
     return p1;
 }
 
-Slider texture_eval_wood_sliders[3] = {
-    (Slider){.initval=0.75f, .min=-0.5f, .max=1.5f, .step=0.01f, .digits=2, .label="center X"},
-    (Slider){.initval=0.75f, .min=-0.5f, .max=1.5f, .step=0.01f, .digits=2, .label="center Y"},
-    (Slider){.initval=0.0f, .min=0.0f, .max=M_2_PI, .step=0.01f, .digits=2, .label="phase shift"}
+Slider texture_eval_wood_sliders[] = {
+    (Slider){.initval=0.5f, .min=-0.5f, .max=1.5f, .step=0.01f, .digits=2, .label="center X"},
+    (Slider){.initval=0.5f, .min=-0.5f, .max=1.5f, .step=0.01f, .digits=2, .label="center Y"},
+    (Slider){.initval=0.0f, .min=0.0f, .max=2*M_PI, .step=0.01f, .digits=2, .label="phase shift"},
+    (Slider){.initval=10.0f, .min=10.0f, .max=100.0f, .step=0.05f, .digits=2, .label="scale"},
+    (Slider){.initval=0.4f, .min=0.1f, .max=10.0f, .step=0.05f, .digits=2, .label="noise perturbation"},
+    (Slider){.initval=1.0f, .min=1.0f, .max=10.0f, .step=0.05f, .digits=2, .label="line thickness"},
+    (Slider){.initval=1.0f, .min=0.5f, .max=10.0f, .step=0.05f, .digits=2, .label="line amplitude"},
+    (Slider){.initval=0.001f, .min=0.0f, .max=0.01f, .step=0.0001f, .digits=4, .label="noise frequency"},
+    (Slider){.initval=0.5f, .min=0.0f, .max=1.0f, .step=0.01f, .digits=2, .label="noise gain"},
+    (Slider){.initval=2.0f, .min=1.0f, .max=4.0f, .step=0.05f, .digits=2, .label="noise lacunarity"},
 };
+
+double wood(double x, double l)
+{
+    return exp(l*sin(x))/exp(l);
+}
 
 Pixel texture_eval_wood(int xi, int yi, double* slidervals)
 {
@@ -107,37 +120,43 @@ Pixel texture_eval_wood(int xi, int yi, double* slidervals)
     double dx = slidervals[0] - x;
     double dy = slidervals[1] - y;
     double phase = slidervals[2];
-    double v = cos((sqrt(dx*dx + dy*dy)/25.0f) + phase);
-    v = (v+1)/2;
+    double scale = slidervals[3];
+    double perturbation = slidervals[4];
+    double thickness = slidervals[5];
+    double line_amp = slidervals[6];
+    double frac_sliders[] = {slidervals[7], slidervals[8], slidervals[9]};
+    Pixel p = texture_eval_frac(xi, yi, frac_sliders);
+    double v = line_amp * wood(2*((sqrt(dx*dx + dy*dy)*scale) + phase + p.r*perturbation), thickness);
+    v += 0.4f; // normalize to range [0,1]
     return (Pixel){.r=v, .g=v, .b=v};
 }
 
 TextureFunc tex_funcs[] = {
     (TextureFunc){.f_ptr=texture_eval_frac,
-                  .n_sliders=3,
+                  .n_sliders=ARRAYLEN(texture_eval_frac_sliders),
                   .sliders=texture_eval_frac_sliders,
                   .f_name="Fractal sum (value noise)",
                   .pref_tint={.r=1.0f, .g=1.0f, .b=1.0f}},
     (TextureFunc){.f_ptr=texture_eval_sin,
-                  .n_sliders=3,
+                  .n_sliders=ARRAYLEN(texture_eval_sin_sliders),
                   .sliders=texture_eval_sin_sliders,
                   .f_name="Sine wave",
                   .pref_tint={.r=1.0f, .g=1.0f, .b=1.0f}},
     (TextureFunc){.f_ptr=texture_eval_gradient,
-                  .n_sliders=1,
+                  .n_sliders=ARRAYLEN(texture_eval_gradient_sliders),
                   .sliders=texture_eval_gradient_sliders,
                   .f_name="Gradient",
                   .pref_tint={.r=1.0f, .g=1.0f, .b=1.0f}},
     (TextureFunc){.f_ptr=texture_eval_grass,
-                  .n_sliders=3,
+                  .n_sliders=ARRAYLEN(texture_eval_grass_sliders),
                   .sliders=texture_eval_grass_sliders,
                   .f_name="Grass",
                   .pref_tint={.r=1.0f, .g=1.0f, .b=1.0f}},
     (TextureFunc){.f_ptr=texture_eval_wood,
-                  .n_sliders=3,
+                  .n_sliders=ARRAYLEN(texture_eval_wood_sliders),
                   .sliders=texture_eval_wood_sliders,
                   .f_name="Wood",
-                  .pref_tint={.r=1.0f, .g=1.0f, .b=1.0f}},
+                  .pref_tint={.r=0.256667f, .g=0.154740f, .b=0.058178f}},
 };
 
-size_t tex_funcs_n = sizeof(tex_funcs)/sizeof(tex_funcs[0]);
+size_t tex_funcs_n = ARRAYLEN(tex_funcs);

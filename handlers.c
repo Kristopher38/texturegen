@@ -81,8 +81,6 @@ void recalc_texture(GtkBuilder* builder)
     TextureFunc* tex_func = get_texture_func(builder);
     double* slider_values = get_slider_values(builder, tex_func->n_sliders);
 
-
-
     for (int y = 0; y < height; ++y)
     {
         for (int x = 0; x < width; ++x)
@@ -100,16 +98,16 @@ void recalc_texture(GtkBuilder* builder)
 
     GdkRGBA color;
     gtk_color_chooser_get_rgba(GTK_COLOR_CHOOSER(GETOBJ("tint_button")), &color);
-
+    gboolean normalize = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(GETOBJ("normalize_checkbutton")));
     for (int y = 0; y < height; ++y)
     {
         for (int x = 0; x < width; ++x)
         {
             Pixel* ptex = tex + y*width + x;
             guchar* p = pixels + y*rowstride + x*n_channels;
-            p[0] = fmax(0, ptex->r / max_pixel * 255.0f) * color.red;
-            p[1] = fmax(0, ptex->g / max_pixel * 255.0f) * color.green;
-            p[2] = fmax(0, ptex->b / max_pixel * 255.0f) * color.blue;
+            p[0] = (normalize ? fmax(0, ptex->r / max_pixel * 255.0f) : ptex->r * 255.0f) * color.red;
+            p[1] = (normalize ? fmax(0, ptex->g / max_pixel * 255.0f) : ptex->g * 255.0f) * color.green;
+            p[2] = (normalize ? fmax(0, ptex->b / max_pixel * 255.0f) : ptex->b * 255.0f) * color.blue;
         }
     }
 
@@ -243,5 +241,10 @@ G_MODULE_EXPORT void color_set(GtkColorButton* button, GtkBuilder* builder)
     GdkRGBA color;
     gtk_color_chooser_get_rgba(GTK_COLOR_CHOOSER(GETOBJ("tint_button")), &color);
     printf("%f %f %f\n", color.red, color.green, color.blue);
+    recalc_texture(builder);
+}
+
+G_MODULE_EXPORT void normalize_toggled(GtkCheckButton* button, GtkBuilder* builder)
+{
     recalc_texture(builder);
 }
