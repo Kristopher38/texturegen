@@ -117,7 +117,7 @@ int seed_entry_update(GtkBuilder* builder, int seed)
     GtkEditable* seed_entry = GTK_EDITABLE(GETOBJ("seed_entry"));
     gint* pos;
     char seed_str[20];
-    itoa(seed, seed_str, 10);
+    sprintf(seed_str, "%d", seed);
     gtk_editable_delete_text(seed_entry, 0, -1);
     gtk_editable_insert_text(seed_entry, seed_str, strlen(seed_str), &pos);
 }
@@ -242,9 +242,6 @@ G_MODULE_EXPORT void ignore_scroll(GtkScale* scale, GtkBuilder* builder)
 
 G_MODULE_EXPORT void color_set(GtkColorButton* button, GtkBuilder* builder)
 {
-    GdkRGBA color;
-    gtk_color_chooser_get_rgba(GTK_COLOR_CHOOSER(GETOBJ("tint_button")), &color);
-    printf("%f %f %f\n", color.red, color.green, color.blue);
     recalc_texture(builder);
 }
 
