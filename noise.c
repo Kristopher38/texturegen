@@ -20,7 +20,7 @@ inline void swap(int* a, int* b)
     *a ^= *b;
 }
 
-void noise_init(int seed)
+void noise_init(long long int seed)
 {
     srand(seed != 0 ? seed : time(NULL));
 }

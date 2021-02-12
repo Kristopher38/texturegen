@@ -28,7 +28,7 @@ double* get_slider_values(GtkBuilder* builder, int n_sliders);
 
 void recalc_texture(GtkBuilder* builder);
 
-void seed_entry_update(GtkBuilder* builder, int seed);
+void seed_entry_update(GtkBuilder* builder, long long int seed);
 
 void seed_update_all(GtkBuilder* builder);
 

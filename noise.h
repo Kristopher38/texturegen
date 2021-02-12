@@ -13,7 +13,7 @@ double lerp(double lo, double hi, double t);
 
 void swap(int* a, int* b);
 
-void noise_init(int seed);
+void noise_init(long long int seed);
 
 void noise_new();
 

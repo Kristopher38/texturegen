@@ -112,19 +112,19 @@ void recalc_texture(GtkBuilder* builder)
     gtk_image_set_from_pixbuf(texture, pixbuf);
 }
 
-void seed_entry_update(GtkBuilder* builder, int seed)
+void seed_entry_update(GtkBuilder* builder, long long int seed)
 {
     GtkEditable* seed_entry = GTK_EDITABLE(GETOBJ("seed_entry"));
     gint pos;
     char seed_str[20];
-    sprintf(seed_str, "%d", seed);
+    sprintf(seed_str, "%lld", seed);
     gtk_editable_delete_text(seed_entry, 0, -1);
     gtk_editable_insert_text(seed_entry, seed_str, strlen(seed_str), &pos);
 }
 
 void seed_update_all(GtkBuilder* builder)
 {
-    int seed = rand();
+    long long int seed = rand();
     seed_entry_update(builder, seed);
     noise_init(seed);
     noise_new();
@@ -207,7 +207,6 @@ G_MODULE_EXPORT void save_click(GtkWidget* widget, GtkBuilder* builder)
 G_MODULE_EXPORT void window_show(GtkWidget* widget, GtkBuilder* builder)
 {
     // init texture display
-    GtkImage* texture = GTK_IMAGE(GETOBJ("texture_image"));
     pixbuf = gdk_pixbuf_new(GDK_COLORSPACE_RGB, FALSE, 8, 256, 256);
 
     // init function combobox
