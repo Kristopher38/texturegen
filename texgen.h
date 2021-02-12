@@ -43,6 +43,6 @@ double dist(double x, double y);
 Pixel texture_eval_wood(int xi, int yi, double* slidervals);
 
 extern TextureFunc tex_funcs[];
-extern size_t tex_funcs_n;
+extern gint tex_funcs_n;
 
 #endif

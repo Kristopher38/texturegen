@@ -235,4 +235,4 @@ TextureFunc tex_funcs[] = {
     }
 };
 
-size_t tex_funcs_n = ARRAYLEN(tex_funcs);
+gint tex_funcs_n = ARRAYLEN(tex_funcs);

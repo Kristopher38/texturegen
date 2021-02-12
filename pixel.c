@@ -1,6 +1,6 @@
 #include "pixel.h"
 
-void pixel_pwise_add(Pixel* a, Pixel* b)
+void pixel_pwise_add(Pixel* a, const Pixel* b)
 {
     a->r += b->r;
     a->g += b->g;
@@ -14,7 +14,7 @@ void pixel_scalar_add(Pixel* p, double scalar)
     p->b += scalar;
 }
 
-void pixel_pwise_mul(Pixel* a, Pixel* b)
+void pixel_pwise_mul(Pixel* a, const Pixel* b)
 {
     a->r *= b->r;
     a->g *= b->g;

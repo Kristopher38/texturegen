@@ -16,26 +16,26 @@ void update_sliders(GtkBuilder* builder, int n_sliders, Slider* sliders)
 
     for (int i = 0; i < n_sliders; ++i)
     {
-        GtkBox* slider_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
-        GtkLabel* label = gtk_label_new(sliders[i].label);
+        GtkBox* slider_box = GTK_BOX(gtk_box_new(GTK_ORIENTATION_VERTICAL, 0));
+        GtkLabel* label = GTK_LABEL(gtk_label_new(sliders[i].label));
         GtkAdjustment* adjustment = gtk_adjustment_new(sliders[i].initval,
                                                       sliders[i].min,
                                                       sliders[i].max,
                                                       sliders[i].step,
                                                       10.0, 0.0);
-        GtkScale* slider = gtk_scale_new(GTK_ORIENTATION_HORIZONTAL, adjustment);
+        GtkScale* slider = GTK_SCALE(gtk_scale_new(GTK_ORIENTATION_HORIZONTAL, adjustment));
         gtk_scale_set_digits(slider, sliders[i].digits);
         gtk_range_set_round_digits(GTK_RANGE(slider), sliders[i].digits);
-        g_signal_connect(slider, "scroll-event", ignore_scroll, builder);
-        g_signal_connect(adjustment, "value-changed", slider_changed, builder);
+        g_signal_connect(slider, "scroll-event", (GCallback)ignore_scroll, builder);
+        g_signal_connect(adjustment, "value-changed", (GCallback)slider_changed, builder);
 
         adjustments[i] = adjustment;
         g_object_ref_sink(adjustment);
         gtk_box_pack_start(slider_box, GTK_WIDGET(label), FALSE, FALSE, 0);
         gtk_box_pack_start(slider_box, GTK_WIDGET(slider), FALSE, FALSE, 0);
-        gtk_box_pack_start(sliders_box, slider_box, FALSE, FALSE, 0);
+        gtk_box_pack_start(sliders_box, GTK_WIDGET(slider_box), FALSE, FALSE, 0);
     }
-    gtk_widget_show_all(sliders_box);
+    gtk_widget_show_all(GTK_WIDGET(sliders_box));
 }
 
 int read_seed(GtkEditable* editable)
@@ -112,10 +112,10 @@ void recalc_texture(GtkBuilder* builder)
     gtk_image_set_from_pixbuf(texture, pixbuf);
 }
 
-int seed_entry_update(GtkBuilder* builder, int seed)
+void seed_entry_update(GtkBuilder* builder, int seed)
 {
     GtkEditable* seed_entry = GTK_EDITABLE(GETOBJ("seed_entry"));
-    gint* pos;
+    gint pos;
     char seed_str[20];
     sprintf(seed_str, "%d", seed);
     gtk_editable_delete_text(seed_entry, 0, -1);
@@ -196,7 +196,7 @@ G_MODULE_EXPORT void save_click(GtkWidget* widget, GtkBuilder* builder)
             g_printerr("%s", save_error->message);
             GtkMessageDialog* dialog = GTK_MESSAGE_DIALOG(GETOBJ("save_error_dialog"));
             gtk_message_dialog_set_markup(dialog, save_error->message);
-            gtk_dialog_run(dialog);
+            gtk_dialog_run(GTK_DIALOG(dialog));
         }
         free(filename_ext);
         g_free(filename);
@@ -211,7 +211,7 @@ G_MODULE_EXPORT void window_show(GtkWidget* widget, GtkBuilder* builder)
     pixbuf = gdk_pixbuf_new(GDK_COLORSPACE_RGB, FALSE, 8, 256, 256);
 
     // init function combobox
-    GtkComboBox* functions_combo = GTK_COMBO_BOX_TEXT(GETOBJ("function_combobox"));
+    GtkComboBoxText* functions_combo = GTK_COMBO_BOX_TEXT(GETOBJ("function_combobox"));
     for (int i = 0; i < tex_funcs_n; ++i)
         gtk_combo_box_text_append_text(functions_combo, tex_funcs[i].f_name);
     gtk_combo_box_set_active(GTK_COMBO_BOX(functions_combo), 0);
@@ -227,7 +227,7 @@ G_MODULE_EXPORT void window_show(GtkWidget* widget, GtkBuilder* builder)
     // workaround for setting image of save error dialog
     GtkImage* save_error_img = GTK_IMAGE(GETOBJ("save_error_image"));
     GtkMessageDialog* save_error_dialog = GTK_MESSAGE_DIALOG(GETOBJ("save_error_dialog"));
-    gtk_message_dialog_set_image(save_error_dialog, save_error_img);
+    gtk_message_dialog_set_image(save_error_dialog, GTK_WIDGET(save_error_img));
 }
 
 G_MODULE_EXPORT void window_destroy(GtkWidget* widget, GtkBuilder* builder)
