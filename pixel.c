@@ -40,3 +40,25 @@ void pixel_norm(Pixel* p)
     float maxp = fmax(p->r, fmax(p->g, p->b));
     pixel_scalar_div(p, maxp);
 }
+
+PixelHSV pixel_to_hsv(Pixel* p)
+{
+    PixelHSV pHsv;
+    gdouble h, s, v;
+    gtk_rgb_to_hsv(p->r, p->g, p->b, &h, &s, &v);
+    pHsv.h = h;
+    pHsv.s = s;
+    pHsv.v = v;
+    return pHsv;
+}
+
+Pixel pixel_to_rgb(PixelHSV* p)
+{
+    Pixel pRgb;
+    gdouble r, g, b;
+    gtk_hsv_to_rgb((gdouble)p->h, (gdouble)p->s, (gdouble)p->v, &r, &g, &b);
+    pRgb.r = r;
+    pRgb.g = g;
+    pRgb.b = b;
+    return pRgb;
+}
