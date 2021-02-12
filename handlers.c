@@ -126,9 +126,7 @@ void seed_update_all(GtkBuilder* builder)
 {
     long long int seed = rand();
     seed_entry_update(builder, seed);
-    noise_init(seed);
-    noise_new();
-    recalc_texture(builder);
+    // actual texture update will be triggered by seed_change handler
 }
 
 G_MODULE_EXPORT void slider_changed(GtkWidget* widget, GtkBuilder* builder)
