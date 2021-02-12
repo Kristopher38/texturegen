@@ -162,6 +162,12 @@ G_MODULE_EXPORT void function_changed(GtkWidget* widget, GtkBuilder* builder)
 {
     TextureFunc* tex_func = get_texture_func(builder);
     update_sliders(builder, tex_func->n_sliders, tex_func->sliders);
+    GdkRGBA pref_color;
+    pref_color.alpha = 1.0f;
+    pref_color.red = tex_func->pref_tint.r;
+    pref_color.green = tex_func->pref_tint.g;
+    pref_color.blue = tex_func->pref_tint.b;
+    gtk_color_button_set_rgba(GTK_COLOR_BUTTON(GETOBJ("tint_button")), &pref_color);
     recalc_texture(builder);
 }
 
