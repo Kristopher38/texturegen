@@ -68,6 +68,8 @@
             <property name="height-request">34</property>
             <property name="visible">True</property>
             <property name="can-focus">True</property>
+            <property name="margin-left">5</property>
+            <property name="margin-right">5</property>
             <property name="margin-start">5</property>
             <property name="margin-end">5</property>
             <property name="margin-top">5</property>
@@ -78,14 +80,14 @@
             <signal name="insert-text" handler="seed_insert_text" swapped="no"/>
           </object>
           <packing>
-            <property name="x">89</property>
-            <property name="y">334</property>
+            <property name="x">87</property>
+            <property name="y">348</property>
           </packing>
         </child>
         <child>
           <object class="GtkScrolledWindow">
             <property name="width-request">200</property>
-            <property name="height-request">320</property>
+            <property name="height-request">386</property>
             <property name="visible">True</property>
             <property name="can-focus">True</property>
             <property name="margin-left">10</property>
@@ -117,7 +119,7 @@
           </object>
           <packing>
             <property name="x">280</property>
-            <property name="y">48</property>
+            <property name="y">53</property>
           </packing>
         </child>
         <child>
@@ -129,8 +131,8 @@
             <property name="label" translatable="yes">Seed:</property>
           </object>
           <packing>
-            <property name="x">18</property>
-            <property name="y">343</property>
+            <property name="x">25</property>
+            <property name="y">358</property>
           </packing>
         </child>
         <child>
@@ -140,13 +142,19 @@
             <property name="visible">True</property>
             <property name="can-focus">True</property>
             <property name="receives-default">True</property>
+            <property name="margin-left">5</property>
+            <property name="margin-right">5</property>
+            <property name="margin-start">5</property>
+            <property name="margin-end">5</property>
+            <property name="margin-top">5</property>
+            <property name="margin-bottom">5</property>
             <property name="title" translatable="yes">Pick a texture tint</property>
             <property name="color">#ffffffffffff</property>
             <signal name="color-set" handler="color_set" swapped="no"/>
           </object>
           <packing>
-            <property name="x">84</property>
-            <property name="y">385</property>
+            <property name="x">87</property>
+            <property name="y">393</property>
           </packing>
         </child>
         <child>
@@ -158,8 +166,8 @@
             <property name="label" translatable="yes">Color tint:</property>
           </object>
           <packing>
-            <property name="x">17</property>
-            <property name="y">396</property>
+            <property name="x">25</property>
+            <property name="y">410</property>
           </packing>
         </child>
         <child>
@@ -177,25 +185,31 @@
             <signal name="changed" handler="function_changed" swapped="no"/>
           </object>
           <packing>
-            <property name="x">290</property>
+            <property name="x">280</property>
             <property name="y">10</property>
           </packing>
         </child>
         <child>
           <object class="GtkCheckButton" id="normalize_checkbutton">
             <property name="label" translatable="yes">Normalize values</property>
-            <property name="width-request">95</property>
+            <property name="width-request">117</property>
             <property name="height-request">20</property>
             <property name="visible">True</property>
             <property name="can-focus">True</property>
             <property name="receives-default">False</property>
+            <property name="margin-left">5</property>
+            <property name="margin-right">5</property>
+            <property name="margin-start">5</property>
+            <property name="margin-end">5</property>
+            <property name="margin-top">5</property>
+            <property name="margin-bottom">5</property>
             <property name="active">True</property>
             <property name="draw-indicator">True</property>
             <signal name="toggled" handler="normalize_toggled" swapped="no"/>
           </object>
           <packing>
-            <property name="x">13</property>
-            <property name="y">312</property>
+            <property name="x">15</property>
+            <property name="y">317</property>
           </packing>
         </child>
       </object>
