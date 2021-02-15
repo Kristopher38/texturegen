@@ -13,5 +13,5 @@ link_directories(${GTK3_LIBRARY_DIRS})
 
 add_definitions(${GTK3_CFLAGS_OTHER})
 
-add_executable(${PROJECT_NAME} "main.c" "noise.c" "handlers.c" "texgen.c" "pixel.c")
+add_executable(${PROJECT_NAME} "main.c" "noise.c" "handlers.c" "texgen.c" "pixel.c" "kisstoys.c")
 target_link_libraries(${PROJECT_NAME} ${GTK3_LIBRARIES})
