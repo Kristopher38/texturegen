@@ -2,6 +2,7 @@
 
 double noise[SAMPLES];
 int perm_table[SAMPLES*2];
+SeqKISS rng;
 
 inline double smootherstep(double t)
 {
@@ -22,7 +23,9 @@ inline void swap(int* a, int* b)
 
 void noise_init(long long int seed)
 {
-    srand(seed != 0 ? seed : time(NULL));
+    SeqMWC mwc;
+    SeqMWC_seed(&mwc, seed != 0 ? seed : time(NULL), seed != 0 ? seed : time(NULL));
+    SeqKISS_seed_bySeqMWC(&rng, &mwc);
 }
 
 void noise_new()
@@ -30,13 +33,13 @@ void noise_new()
     // generate noise table and permutation table
     for (int i = 0; i < SAMPLES; ++i)
     {
-        noise[i] = (double)(rand()) / (double)(RAND_MAX);
+        noise[i] = SeqKISS_takeF32Sample(&rng);
         perm_table[i] = i;
     }
     // permute the permutation table
     for (int i = 0; i < SAMPLES; ++i)
     {
-        int r = rand() & SAMPLES_MASK;
+        int r = SeqKISS_takeU32Sample(&rng) & SAMPLES_MASK;
         swap(&perm_table[i], &perm_table[r]);
         perm_table[SAMPLES+i] = perm_table[i];
     }

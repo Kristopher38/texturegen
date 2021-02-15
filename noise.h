@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include "vec2d.h"
+#include "kisstoys.h"
 
 #define SAMPLES 256
 #define SAMPLES_MASK (SAMPLES-1)
